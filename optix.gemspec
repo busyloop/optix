@@ -4,6 +4,8 @@ require File.expand_path('../lib/optix/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Moe"]
   gem.email         = ["moe@busyloop.net"]
+  gem.homepage      = "https://github.com/busyloop/optix"
+  gem.has_rdoc      = false
   gem.description   = %q{Optix is an unobtrusive, composable command line parser.}
   gem.summary       = %q{Optix is an unobtrusive, composable command line parser.}
   gem.homepage      = ""
