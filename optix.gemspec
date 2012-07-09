@@ -8,7 +8,6 @@ Gem::Specification.new do |gem|
   gem.has_rdoc      = false
   gem.description   = %q{Optix is an unobtrusive, composable command line parser.}
   gem.summary       = %q{Optix is an unobtrusive, composable command line parser.}
-  gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
