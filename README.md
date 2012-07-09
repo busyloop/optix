@@ -8,7 +8,7 @@ Optix is an unobtrusive, composable command line parser based on Trollop.
 * Lightweight, unobtrusive syntax.
   No subclassing or introduction of dependencies.
 
-* Supports subcommands such as `git remote show origin` with arbitrary nesting.
+* Nested subcommands such as `git remote show origin` may be composed at runtime in arbitrary order.
 
 * Subcommands inherit from their parent. Common options (such as '--debug' or '--loglevel')
   need to be declared only once to make them available to an entire branch.
