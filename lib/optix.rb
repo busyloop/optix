@@ -59,24 +59,21 @@ class Optix
       o[:params] = @@config[:text_param_subcommand]
     end
 
-    text = o[:header].gsub('%0', $0)
-                     .gsub('%command', cmdpath.join(' '))
-                     .gsub('%params', o[:params])
-                     .gsub(/ +/, ' ')
+    text = o[:header].gsub('%0', $0).gsub('%command', cmdpath.join(' ')).gsub('%params', o[:params]).gsub(/ +/, ' ')
 
     calls = []
-    calls << [:banner, [text], nil]
+    calls << [:nowrap, [text], nil]
 
     calls << [:banner, [' '], nil]
     unless o[:text].nil?
-      calls << [:banner, o[:text], nil]
+      calls << [:banner, [o[:text]], nil]
       calls << [:banner, [' '], nil]
     end
 
     # sort opts and move non-opt calls to the end
     non_opt = parent_calls.select {|x| x[0] != :opt }
-    parent_calls.select! {|x| x[0] == :opt }
-    parent_calls.sort! {|a,b| ; a[1][0] <=> b[1][0] }
+    parent_calls = parent_calls.select {|x| x[0] == :opt }
+    parent_calls.sort! {|a,b| ; a[1][0].to_s <=> b[1][0].to_s }
     parent_calls += non_opt
     parent_calls.unshift([:banner, [@@config[:text_header_options]], nil])
     calls += parent_calls

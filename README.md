@@ -18,6 +18,8 @@ Optix is an unobtrusive, composable command line parser based on Trollop.
 
 * Automatic validation and help-screens.
 
+* Should work on all major Ruby versions (tested on 1.9.3, 1.9.2 and 1.8.7).
+
 * Strong test-suite.
 
 ## Installation
