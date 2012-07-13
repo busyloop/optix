@@ -246,6 +246,9 @@ class Parser
   def banner s; @order << [:text, s] end
   alias :text :banner
 
+  ## Adds text to the help display without wrapping.
+  def nowrap s; @order << [:nowrap, s] end
+
   ## Marks two (or more!) options as requiring each other. Only handles
   ## undirected (i.e., mutual) dependencies. Directed dependencies are
   ## better modeled with Trollop::die.
@@ -477,6 +480,11 @@ class Parser
     @order.each do |what, opt|
       if what == :text
         stream.puts wrap(opt)
+        next
+      end
+
+      if what == :nowrap
+        stream.puts opt
         next
       end
 
