@@ -9,7 +9,7 @@ RSpec::Core::RakeTask.new("test:spec") do |t|
     t.pattern = 'spec/*_spec.rb'
     t.rcov = false
     #t.rspec_opts = '-b -c -f progress --tag ~benchmark'
-    t.rspec_opts = '-b -c -f documentation --tag ~benchmark'
+    t.rspec_opts = '--fail-fast -b -c -f documentation --tag ~benchmark'
 end
 
 RSpec::Core::RakeTask.new("test:benchmark") do |t|
