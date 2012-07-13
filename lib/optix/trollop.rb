@@ -472,10 +472,10 @@ class Parser
     leftcol_width = left.values.map { |s| s.length }.max || 0
     rightcol_start = leftcol_width + 6 # spaces
 
-    unless @order.size > 0 && @order.first.first == :text
-      stream.puts "#@version\n" if @version
-      stream.puts "Options:"
-    end
+    #unless @order.size > 0 && @order.first.first == :text
+    #  stream.puts "#@version\n" if @version
+    #  stream.puts "Options:"
+    #end
 
     @order.each do |what, opt|
       if what == :text
