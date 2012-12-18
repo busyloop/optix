@@ -124,7 +124,7 @@ describe Optix do
         opt :a, '', :default => true
         opt :b, '', :default => 1
         opt :c, '', :default => 1.0
-        opt :d, '', :default => File.new('/tmp')
+        opt :d, '', :default => File.new('/')
         opt :e, '', :default => Date.new
         opt :f, '', :default => "foo"
       end
