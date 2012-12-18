@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix)
+
 # Optix
 
 Optix is an unobtrusive, composable command line parser based on Trollop.
