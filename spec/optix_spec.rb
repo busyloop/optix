@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 require 'optix'
 
 describe Optix do
@@ -124,7 +125,7 @@ describe Optix do
         opt :a, '', :default => true
         opt :b, '', :default => 1
         opt :c, '', :default => 1.0
-        opt :d, '', :default => File.new('/')
+        opt :d, '', :default => File.new(Tempfile.new('optix_test').path)
         opt :e, '', :default => Date.new
         opt :f, '', :default => "foo"
       end
@@ -150,7 +151,7 @@ describe Optix do
       Optix::command('', @context) do
         opt :b, '', :default => [1]
         opt :c, '', :default => [1.0]
-        opt :d, '', :default => [File.new('/tmp')]
+        opt :d, '', :default => [File.new(Tempfile.new('optix_test').path)]
         opt :e, '', :default => [Date.new]
         opt :f, '', :default => ["foo"]
       end
