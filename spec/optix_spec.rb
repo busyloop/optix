@@ -940,7 +940,7 @@ describe Optix do
 
     describe "FileTool" do
       before :each do
-        load 'examples/filetool.rb'
+        load 'examples/singleton_style/filetool.rb'
       end
 
       it "prints version when invoked with -v" do

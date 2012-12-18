@@ -271,3 +271,71 @@ class Optix
   end
 end
 
+class Optix
+  class CLI
+    class << self
+      def add_context(key, value, &block)
+        @optix_context ||= []
+        @optix_context << [key, value, block]
+      end
+
+      [:desc, :text, :opt, :params, :filter,
+       :trigger, :depends, :conflicts, :parent].each do |meth|
+        define_method(meth) do |*value, &block|
+          add_context(meth, value, &block)
+        end
+      end
+
+      def parent(path, label=nil)
+        @optix_context ||= []
+        if label
+          label = [label] if label.is_a? String
+          p = path.split
+          (0..p.length-1).each do |i|
+            _path = p[0..i].join(' ')
+            Optix::command(_path) do
+              desc label[i]
+            end
+          end
+        end
+
+        @optix_parent = path
+      end
+
+      def cli_root(&block)
+        if block
+          add_context(:cli_root, '', &block)
+        else
+          @optix_parent = :none
+        end
+      end
+
+      def method_added(meth)
+        return if @optix_context.nil?
+        if @optix_parent == :none
+          cmd_path = nil
+        elsif @optix_parent
+          cmd_path = "#{@optix_parent} #{meth.to_s}"
+        else
+          cmd_path = meth.to_s
+        end
+        cmd = Optix::command(cmd_path) {}
+        @optix_context.each do |e|
+          if :cli_root == e[0]
+            Optix::command *e[1], &e[2]
+            next
+          end
+          cmd.send(e[0], *e[1], &e[2])
+        end
+        me = self
+
+        cmd.send(:exec) do |cmd, opts, argv|
+          self.new.send(meth, cmd, opts, argv)
+        end
+        @optix_parent = ''
+        @optix_context = nil
+      end
+    end
+  end
+end
+

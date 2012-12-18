@@ -1,13 +1,8 @@
+#!/usr/bin/env ruby
 require 'optix'
 
 #
-# Example application to demonstrate Optix.
-#
-# The easiest way to get started is to download this file
-# and actually run it. Play around, try invoking '--help',
-# '-v', '--version' and the subcommands. 
-#
-# Then come back here to learn how it's done. :)
+# Example application to demonstrate Optix advanced usage.
 #
 module Example
   class FileTool
@@ -15,7 +10,7 @@ module Example
     # Also declaring the first-level sub-commands right here.
     # Just like the root-command these commands can not be invoked
     # directly (because they have sub-commands). Their declaration
-    # is not mandatory, but by declaring them explicitly we can add
+    # is not mandatory but by declaring them explicitly we can add
     # some useful help-texts to aid the user.
     Optix::command do
       # Let's have a nice description

@@ -1,26 +1,25 @@
 # Optix
 
 Optix is an unobtrusive, composable command line parser based on Trollop.
+It is intended to be a lighter weight alternative to [Thor](https://github.com/wycats/thor).
 
 
 ## Features
 
-* Lightweight, unobtrusive syntax.
-  No subclassing or introduction of dependencies.
+* Convenient, declarative syntax (similar to [Thor](https://github.com/wycats/thor))
 
 * Nested subcommands such as `git remote show origin` may be composed at runtime in arbitrary order.
 
 * Subcommands inherit from their parent. Common options (such as '--debug' or '--loglevel')
   need to be declared only once to make them available to an entire branch.
 
-* Stands on the shoulders of [Trollop](http://trollop.rubyforge.org) (by William Morgan), one of the most complete and robust
-  option-parser implementations ever created.
+* Stands on the shoulders of [Trollop](http://trollop.rubyforge.org) (by William Morgan), one of the
+  most advanced option-parser implementations available.
 
 * Automatic validation and help-screens.
 
 * Should work on all major Ruby versions (tested on 1.9.3, 1.9.2 and 1.8.7).
 
-* Strong test-suite.
 
 ## Installation
 
@@ -30,37 +29,35 @@ Optix is an unobtrusive, composable command line parser based on Trollop.
 
 ```ruby
 #!/usr/bin/env ruby
+
 require 'optix'
 
 module Example
-  module Printer
-    # Declare the "root"-command 
-    Optix::command do
+  class Printer < Optix::CLI
+
+    # Declare global cli-options
+    cli_root do
+      # A label to be printed on the root help-screen
       text "I am printer. I print strings to the screen."
       text "Please invoke one of my not so many sub-commands."
-  
-      # Declare a global option (all subcommands inherit this)
+      
+      # An option that is inherited by all commands
       opt :debug, "Enable debugging", :default => false
     end
-  
-    # Declare sub-command 
-    Optix::command 'print' do
-      desc "Print a string"
-      text "Print a string to the screen"
-      params "<string>"
-  
-      opt :count, "Print how many times?", :default => 1
-  
-      # This block is invoked when validations pass.
-      exec do |cmd, opts, argv|
-        if argv.length < 1
-          raise Optix::HelpNeeded
-        end
+    
+    # Declare a command called "print"
+    desc "Print a string"
+    text "Print a string to the screen"
+    opt :count, "Print how many times?", :default => 1
+    params "<string>"
+    def print(cmd, opts, argv)
+      if argv.length < 1
+        raise Optix::HelpNeeded
+      end
 
-        puts "DEBUGGING IS ENABLED!" if opts[:debug]
-        (1..opts[:count]).each do
-          puts argv.join(' ') 
-        end
+      puts "DEBUGGING IS ENABLED!" if opts[:debug]
+      (1..opts[:count]).each do
+        puts argv.join(' ')
       end
     end
   end
@@ -95,56 +92,106 @@ See the `examples/`-folder for more elaborate examples.
 
 ## Documentation
 
+A cli is composed by sub-classing `Optix::CLI` and using the DSL
+to describe the desired commands, labels and options.
+
+At runtime you call `Optix.invoke!(ARGV)` to invoke the parser. It will parse
+and validate the input (in this case: ARGV), create an instance of the class
+containing the requested method (if any) and call the latter.
+
+In case of a validation error Optix displays an adequate
+error-message and auto-generated help-screen.
+
+If your program contains multiple classes inheriting from `Optix::CLI`
+then the resulting cli will be the sum of their parts. You don't have
+to pay attention to load-order, an Optix CLI assembles correctly in 
+any order.
+
 ### Commands and Sub-Commands
 
-Commands may be declared anywhere, at any time, in any order.
-Declaring the "root"-command looks like this:
+In Optix all commands are created equal. In order to nest
+commands you simply declare them with a `parent`. The minimum
+code to create a program that can be invoked as `program.rb hello world`
+would look like this:
 
 ```ruby
+#!/usr/bin/env ruby
+
 require 'optix'
 
-Optix::command do
-  # opts, triggers, etc
+module Example
+  class HelloWorld < Optix::CLI
+
+    # Declare a command called "world" as child of "hello"
+    parent 'hello'
+    def world(cmd, opts, argv)
+      puts "Hello world!"
+    end
+  end
+end
+
+if __FILE__ == $0
+  # Perform the actual parsing and execution.
+  Optix.invoke!(ARGV)
 end
 ```
 
-Now, let's add a sub-command:
+You'll notice that we didn't actually declare the parent-command itself (`hello`).
+In optix this isn't necessary, any gaps in the hierarchy are automatically filled in.
+
+Commands may be nested to any depth, e.g. try this parent in the above code: `parent 'shout at the'`.
+
+## Commands that have sub-commands can not be invoked
+
+When you have a command `foo bar` then the parent command `foo` can not be invoked.
+It will still appear in help-screens and behave as expected, though.
+This is a deliberate constraint enforced by Optix in order to protect the sanity of your users.
+
+## Helpers
+
+Optix ignores all methods that aren't preceded by a DSL-directive
+(e.g. `parent`, `desc` or `opt`). Thus you don't need to do anything
+special to mix command-methods with helper-methods.
+
+Example:
 
 ```ruby
-Optix::command 'sub' do
-  # opts, triggers, etc
+module Example
+  class HelperExample < Optix::CLI
+
+    # This method becomes a command because it is
+    # preceded by an optix-directive ('parent')
+    parent 'hello'
+    def world(cmd, opts, argv)
+      puts "Hello world!"
+    end
+
+    # This method is ignored by Optix
+    def iam_a_helper(yay)
+      # ...
+    end
+  end
 end
 ```
 
-And finally, a sub-sub command:
 
-```ruby
-Optix::command 'sub sub' do
-  # opts, triggers, etc
-end
-```
+### Optix DSL
 
-Remember: Optix doesn't care about the order of declarations.
-The `sub sub` command may be declared prior to the `sub` command.
- 
-A common pattern is to insert your `Optix::command` blocks directly
-at the module level so they get invoked during class-loading.
-This way your CLI assembles itself automatically and the
-command-hierarchy mirrors the modules/classes that
-are actually loaded.
-
-
-### Optix::command DSL
-
-Within `Optix::command` the following directives are available:
+The following directives are available:
 
 ### desc
 
 Short description, displayed in the subcommand-list on the help-screen of the *parent* command.
 
 ```ruby
-Optix::command "frobnitz" do
-  desc "Frobnicates the gizmo"
+module Example
+  class Frobnitz < Optix::CLI
+
+    desc 'Frobnicate a gizmo'
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
@@ -153,13 +200,98 @@ end
 Long description, displayed on the help-screen for this command.
 
 ```ruby
-Optix::command "frobnitz" do
-  text "Frobnicate the gizmo by subtle twiddling."
-  text "Please only apply this to 2-state devices or you might bork it."
+module Example
+  class Frobnitz < Optix::CLI
+
+    text "Frobnicate the gizmo by subtle twiddling."
+    text "Please only apply this to 2-state devices or you might bork it."
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
 * May be called multiple times for a multi-line description.
+
+### parent
+
+Specifies the parent for this command.
+
+```ruby
+module Example
+  class Frobnitz < Optix::CLI
+
+    parent 'foo bar', ['desc for foo', 'desc for bar']
+    def batz(cmd, opts, argv)
+      puts "foo bar batz was called!"
+    end
+  end
+end
+```
+
+* Commands may be nested to any depth (delimited by whitespace), missing
+  parts of the hierarchy are filled in automatically.
+
+* The second argument to `parent` is an optional array of descriptions (`desc`) for
+  the auto-generated parents.
+
+* Use the special `parent :none` to describe the root-command in programs that
+  should accept arguments directly (`foo.rb --debug=true`) without any
+  commands (`foo.rb command --debug=true`). See `examples/thor_style/bare.rb`
+  for an example of this.
+
+### cli_root
+
+Takes a block to specify the root-command.
+
+This is a useful shorthand in programs that have
+(sub-)commands where it hence doesn't make sense to use
+the `parent :none`-syntax.
+
+```ruby
+#!/usr/bin/env ruby
+
+require 'optix'
+
+module Example
+  class Frobnitz < Optix::CLI
+
+    # Declare global cli-options (aka "the root-command")
+    cli_root do
+      # A label to be printed on the root help-screen
+      text "I am printer. I print strings to the screen."
+      text "Please invoke one of my not so many sub-commands."
+      
+      # An option that is inherited by all commands
+      opt :debug, "Enable debugging", :default => false
+    end
+    
+    # Declare a command called "print"
+    desc "Print a string"
+    text "Print a string to the screen"
+    opt :count, "Print how many times?", :default => 1
+    params "<string>"
+    def print(cmd, opts, argv)
+      if argv.length < 1
+        raise Optix::HelpNeeded
+      end
+
+      if opts[:debug]
+        # ...
+      end
+    end
+  end
+end
+
+if __FILE__ == $0
+  # Perform the actual parsing and execution.
+  Optix.invoke!(ARGV)
+end
+```
+
+* All sub-commands inherit the `opt`s from their parents.
+  A `text` declared inside `cli_root` will display on the root help-screen.
 
 
 ### opt
@@ -167,8 +299,14 @@ end
 Declares an option.
 
 ```ruby
-Optix::command do
-  opt :some_name, "some description", :default => 'some_default'
+module Example
+  class Frobnitz < Optix::CLI
+
+    opt :some_name, "some description", :default => 'some_default'
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
@@ -231,13 +369,18 @@ Takes the following optional arguments:
 Describes positional parameters that this command accepts.
 
 ```ruby
-Optix::command do
-  params "<foo> [bar]"
+module Example
+  class Frobnitz < Optix::CLI
+    params "<foo> [bar]"
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
-* Note: Optix does **not** validate or inspect positional parameters at all (this is your job, inside exec{}).
-  The value of this command is only used to display a proper synopsis in the help-screen.
+* Note: Optix does **not** validate or inspect positional parameters. This is up to you inside your method.
+  The value of this command is only used by Optix to display a proper synopsis in the help-screen.
 
 ### depends
 
@@ -245,11 +388,17 @@ Marks two (or more!) options as requiring each other. Only handles
 undirected (i.e., mutual) dependencies.
 
 ```ruby
-Optix::command do
-  opt :we,     ""
-  opt :are,    ""
-  opt :family, ""
-  depends :we, :are, :family
+module Example
+  class Frobnitz < Optix::CLI
+
+    opt :we,     ""
+    opt :are,    ""
+    opt :family, ""
+    depends :we, :are, :family
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
@@ -258,23 +407,35 @@ end
 Marks two (or more!) options as conflicting.
 
 ```ruby
-Optix::command do
-  opt :force, "Force this operation"
-  opt :no_op, "Dry run, don't actually do anything"
-  conflict :force, :no_op
+module Example
+  class Frobnitz < Optix::CLI
+
+    opt :force, "Force this operation"
+    opt :no_op, "Dry run, don't actually do anything"
+    conflict :force, :no_op
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
 end
 ```
 
 ### trigger
 
-Triggers allow to short-circuit argument parsing for "action-options"
+Triggers short-circuit argument parsing for "action-options"
 (options that directly trigger an action) such as `--version`.
 
 ```ruby
-Optix::command do
-  opt :version, "Print version and exit"
-  trigger :version do
-    puts "Version 1.0"
+module Example
+  class Frobnitz < Optix::CLI
+
+    opt :version, "Print version and exit"
+    trigger :version do
+      puts "Version 1.0"
+    end
+    def frob(cmd, opts, argv)
+      ...
+    end
   end
 end
 ```
@@ -296,14 +457,20 @@ end
 
 ### filter
 
-Filters allow to group functionality that is common to a branch of subcommands.
+Filters group functionality that is common to a branch of sub-commands.
 
 ```ruby
-Optix::command do
-  opt :debug, "Enable debugging"
-  filter do |cmd, opts, argv|
-    if opts[:debug]
-      # .. enable debugging ..
+module Example
+  class Frobnitz < Optix::CLI
+
+    opt :debug, "Enable debugging"
+    filter do |cmd, opts, argv|
+      if opts[:debug]
+        # .. enable debugging ..
+      end
+    end
+    def frob(cmd, opts, argv)
+      ...
     end
   end
 end
@@ -322,28 +489,25 @@ end
   parsing and display the help-screen.
 
 
-### exec
-
-The exec-block is called when your command is invoked, after validation
-passed. It should contain (or invoke) your actual business logic.
+### Method signature
 
 ```ruby
-Optix::command do
-  exec do |cmd, opts, argv|
-    if opts[:debug]
-      # .. enable debugging ..
+module Example
+  class Frobnitz < Optix::CLI
+
+    def frob(cmd, opts, argv)
+      ...
     end
   end
 end
 ```
 
-* Your block receives three arguments:
+* Your command-method receives three arguments:
     * `cmd` (Array) The full command that was executed, e.g.: ['foo', 'bar', 'baz']
     * `opts` (Hash) The options-hash, e.g.: { :debug => true }
     * `argv` (Array) Positional parameters that your command may have received, e.g.: ['a','b','c']
 
-* You may raise `Optix::HelpNeeded` inside your exec-block to abort
-  parsing and display the help-screen.
+* You may raise `Optix::HelpNeeded` to abort parsing and display the help-screen.
 
 
 ## Chain of execution
@@ -359,40 +523,12 @@ This is the chain of execution when you pass ['foo', 'bar', 'batz'] to `Optix.in
   1. Filters for `batz` (if any)
   1. Exec{}-block for `batz`
 
+## Advanced usage
 
+Optix is very flexible and can be easily shaped into many forms.
 
-## Scopes
-
-In rare cases you may want to have multiple independent Optix command-trees in a single app.
-This can be achieved by passing a scope-name to your command-declarations, like so:
-
-```ruby
-# Declare root-command in the :default scope
-Optix::command '', :default do
-  # opts, triggers, etc
-end
-
-# Declare root-command in another, independent scope
-Optix::command '', :other_scope do
-end
-
-# Declare a sub-command in the other scope
-Optix::command 'sub', :other_scope do
-end
-
-# Then either invoke the :default scope
-Optix.invoke!(ARGV)
-# ...or...
-Optix.invoke!(ARGV, :other_scope)
-```
-
-## Re-initialization
-
-In even rarer cases you may need to reset Optix at runtime.
-To make Optix forget all scopes, configuration and commands, invoke:
-
-`Optix.reset!`
-
+Please see the specs, source-code and the examples in `examples/singleton_style`
+for advanced usage patterns (no sub-classing, lower level access).
 
 ## Contributing
 
