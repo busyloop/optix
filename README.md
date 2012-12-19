@@ -94,20 +94,27 @@ See the `examples/`-folder for more elaborate examples.
 
 ## Documentation
 
-A cli is composed by sub-classing `Optix::CLI` and using the DSL
-to describe the desired commands, labels and options.
+A cli is built using the declarative Optix DSL inside the body
+of at least one sub-class of `Optix::CLI`.
 
-At runtime you call `Optix.invoke!(ARGV)` to invoke the parser. It will parse
-and validate the input (in this case: ARGV), create an instance of the class
-containing the requested method (if any) and call the latter.
+After the declarations have been loaded you invoke the parser
+with a call to `Optix.invoke!(ARGV)`. It will parse and validate
+the input (in this case: ARGV), create an instance of the class
+that contains the requested command-method, and call said method
+with the user-supplied opts and arguments.
 
 In case of a validation error Optix displays an adequate
 error-message and auto-generated help-screen.
 
-If your program contains multiple classes inheriting from `Optix::CLI`
-then the resulting cli will be the sum of their parts. You don't have
-to pay attention to load-order, an Optix CLI assembles correctly in 
-any order.
+If your program loads multiple sub-classes of `Optix::CLI`
+then the resulting cli will be the sum of all declarations in
+any of them.
+
+Optix is agnostic towards the order of declarations; a sub-command
+declaration is allowed to appear before its parent. This feature allows
+for very dynamic user interfaces to be generated at runtime, e.g.
+via conditionals or dynamic class-loading.
+
 
 ### Commands and Sub-Commands
 
@@ -527,10 +534,12 @@ This is the chain of execution when you pass ['foo', 'bar', 'batz'] to `Optix.in
 
 ## Advanced usage
 
-Optix is very flexible and can be easily shaped into many forms.
+Optix can be shaped into many forms, this document
+only describes the most common usage pattern.
 
 Please see the specs, source-code and the examples in `examples/singleton_style`
-for advanced usage patterns (no sub-classing, lower level access).
+for advanced usage examples (e.g. integrating Optix w/o sub-classing,
+lower level API, scoping, etc.).
 
 ## Contributing
 
