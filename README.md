@@ -343,8 +343,8 @@ Takes the following optional arguments:
     **:floats**, **:ios** or **:dates**. If unset, the default argument type is **:flag**, meaning that the argument
     does not take a parameter. The specification of `:type` is not necessary if a `:default` is given.
 
-  * `:default` Set the default value for an argument. Without a default value, the opts-hash passed to `exec{}`
-    and `filter{}` will have a *nil* value for this key unless the argument is given on the commandline.
+  * `:default` Set the default value for an argument. Without a default value, the opts-hash passed to `trigger{}`,
+    `filter{}` and your command-method will have a *nil* value for this key unless the argument is given on the commandline.
     The argument type is derived automatically from the class of the default value given, so specifying a `:type`
     is not necessary if a `:default` is given. (But see below for an important caveat when `:multi` is specified too.)
     If the argument is a flag, and the default is set to **true**, then if it is specified on the the commandline
@@ -429,7 +429,7 @@ module Example
 
     opt :force, "Force this operation"
     opt :no_op, "Dry run, don't actually do anything"
-    conflict :force, :no_op
+    conflicts :force, :no_op
     def frob(cmd, opts, argv)
       ...
     end
@@ -506,7 +506,7 @@ end
   parsing and display the help-screen.
 
 
-### Method signature
+### Command-Method signature
 
 ```ruby
 module Example
@@ -524,8 +524,7 @@ end
     * `opts` (Hash) The options-hash, e.g.: { :debug => true }
     * `argv` (Array) Positional parameters that your command may have received, e.g.: ['a','b','c']
 
-* You may raise `Optix::HelpNeeded` to abort parsing and display the help-screen.
-
+* You may raise `Optix::HelpNeeded` to display the help-screen and exit.
 
 ## Chain of execution
 
@@ -538,7 +537,7 @@ This is the chain of execution when you pass ['foo', 'bar', 'batz'] to `Optix.in
   1. Filters for `foo` (if any)
   1. Filters for `bar` (if any)
   1. Filters for `batz` (if any)
-  1. Exec{}-block for `batz`
+  1. Your Command-method for `batz`
 
 ## Advanced usage
 
