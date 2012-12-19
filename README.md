@@ -252,11 +252,11 @@ end
 
 ### cli_root
 
-Takes a block to specify the root-command.
+Takes a block (DSL-enabled) to declare the root-command.
 
-This is a useful shorthand in programs that have
-(sub-)commands where it hence doesn't make sense to use
-the `parent :none`-syntax.
+You normally use this to specify the help-text that is to be displayed
+on the root-screen (`foo.rb --help`), default opts that should be inherited
+by all commands, and any top-level filters and triggers.
 
 ```ruby
 #!/usr/bin/env ruby
@@ -266,7 +266,7 @@ require 'optix'
 module Example
   class Frobnitz < Optix::CLI
 
-    # Declare global cli-options (aka "the root-command")
+    # Declare the root-command
     cli_root do
       # A label to be printed on the root help-screen
       text "I am printer. I print strings to the screen."
@@ -274,6 +274,12 @@ module Example
       
       # An option that is inherited by all commands
       opt :debug, "Enable debugging", :default => false
+
+      # Support '--version' and '-v'
+      opt :version, "Print version and exit"
+      trigger :version do
+        puts "Version 1.0"
+      end
     end
     
     # Declare a command called "print"
@@ -299,9 +305,11 @@ if __FILE__ == $0
 end
 ```
 
-* All sub-commands inherit the `opt`s from their parents.
-  A `text` declared inside `cli_root` will display on the root help-screen.
-
+* If you're composing your cli from multiple Optix::Cli-subclasses
+  then the `cli_root`-block probably feels a bit awkward because
+  you're not sure in which class to put it. In that case please take
+  a look at `examples/thor_style/kitchen_sink.rb` for the alternative
+  singleton-style syntax that is usually a better fit in these scenarios.
 
 ### opt
 
@@ -540,6 +548,7 @@ only describes the most common usage pattern.
 Please see the specs, source-code and the examples in `examples/singleton_style`
 for advanced usage examples (e.g. integrating Optix w/o sub-classing,
 lower level API, scoping, etc.).
+
 
 ## Contributing
 
