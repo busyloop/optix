@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix)
+[![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix) [![Dependency Status](https://gemnasium.com/busyloop/optix.png)](https://gemnasium.com/busyloop/optix)
 
 # Optix
 
