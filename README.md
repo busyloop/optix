@@ -396,8 +396,8 @@ module Example
 end
 ```
 
-* Note: Optix does **not** validate or inspect positional parameters. This is up to you inside your method.
-  The value of this command is only used by Optix to display a proper synopsis in the help-screen.
+* Note: Optix does **not** validate or inspect positional parameters.
+  Optix only uses the `params`-String to display a proper synopsis in the help-screen.
 
 ### depends
 
