@@ -90,6 +90,22 @@ Options:
 Commands:
    print   Print a string
  
+
+$ ./printer.rb print --help
+
+Usage: ./printer.rb print <string>
+ 
+Print a string to the screen
+ 
+Options:
+  --count, -c <i>:   Print how many times? (default: 1)
+      --debug, -d:   Enable debugging
+       --help, -h:   Show this message
+ 
+
+$ ./printer.rb print -c 2 foobar
+foobar
+foobar
 ```
 
 See the `examples/`-folder for more elaborate examples.
