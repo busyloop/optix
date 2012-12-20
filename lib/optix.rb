@@ -272,7 +272,7 @@ class Optix
 end
 
 class Optix
-  class CLI
+  class Cli
     class << self
       def add_context(key, value, &block)
         @optix_context ||= []
@@ -335,6 +335,14 @@ class Optix
         @optix_parent = ''
         @optix_context = nil
       end
+    end
+  end
+
+  # For backwards compatibility
+  class CLI < Cli
+    def self.inherited(klass)
+      warn "[DEPRECATION WARNING] Optix::CLI is deprecated. Please use Optix::Cli instead."
+      super
     end
   end
 end

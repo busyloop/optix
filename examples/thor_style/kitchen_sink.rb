@@ -7,7 +7,7 @@ require 'optix'
 module KitchenSink
   # We declare the root-command ("global options") right here
   # NOTE: This is an alternative (equivalent) syntax to using 'cli_root'
-  #       inside a sub-class of Optix::CLI
+  #       inside a sub-class of Optix::Cli
   Optix::command do
     # Help-screen text
     text "Kitchen-sink-multi-tool. I can print text, calculate, sing and dance!"
@@ -27,7 +27,7 @@ module KitchenSink
 
   # This is our Printer again.
   # You probably remember him from the first example. ;)
-  class Printer < Optix::CLI
+  class Printer < Optix::Cli
     desc "Print a string"
     text "Print a string to the screen"
     params "<string>"
@@ -44,7 +44,7 @@ module KitchenSink
   end
 
   # A simple Calculator
-  class Calculator < Optix::CLI
+  class Calculator < Optix::Cli
     # We want all commands in here to be subcommands of
     # 'calc'. Since 'calc' itself is not declared anywhere
     # it is implicitly created, and we also pass a description.

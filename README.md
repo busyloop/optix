@@ -35,9 +35,9 @@ It is intended to be a lighter weight alternative to [Thor](https://github.com/w
 require 'optix'
 
 module Example
-  class Printer < Optix::CLI
+  class Printer < Optix::Cli
 
-    # Declare global cli-options
+    # Declare global Cli-options
     cli_root do
       # A label to be printed on the root help-screen
       text "I am printer. I print strings to the screen."
@@ -94,8 +94,8 @@ See the `examples/`-folder for more elaborate examples.
 
 ## Documentation
 
-A cli is built using the declarative Optix DSL inside the body
-of at least one sub-class of `Optix::CLI`.
+A Cli is built using the declarative Optix DSL inside the body
+of at least one sub-class of `Optix::Cli`.
 
 After the declarations have been loaded you invoke the parser
 with a call to `Optix.invoke!(ARGV)`. It will parse and validate
@@ -106,8 +106,8 @@ with the user-supplied opts and arguments.
 In case of a validation error Optix displays an adequate
 error-message and auto-generated help-screen.
 
-If your program loads multiple sub-classes of `Optix::CLI`
-then the resulting cli will be the sum of all declarations in
+If your program loads multiple sub-classes of `Optix::Cli`
+then the resulting Cli will be the sum of all declarations in
 any of them.
 
 Optix is agnostic towards the order of declarations; a sub-command
@@ -129,7 +129,7 @@ would look like this:
 require 'optix'
 
 module Example
-  class HelloWorld < Optix::CLI
+  class HelloWorld < Optix::Cli
 
     # Declare a command called "world" as child of "hello"
     parent 'hello'
@@ -166,7 +166,7 @@ Example:
 
 ```ruby
 module Example
-  class HelperExample < Optix::CLI
+  class HelperExample < Optix::Cli
 
     # This method becomes a command because it is
     # preceded by an optix-directive ('parent')
@@ -194,7 +194,7 @@ Short description, displayed in the subcommand-list on the help-screen of the *p
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     desc 'Frobnicate a gizmo'
     def frob(cmd, opts, argv)
@@ -210,7 +210,7 @@ Long description, displayed on the help-screen for this command.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     text "Frobnicate the gizmo by subtle twiddling."
     text "Please only apply this to 2-state devices or you might bork it."
@@ -229,7 +229,7 @@ Specifies the parent for this command.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     parent 'foo bar', ['desc for foo', 'desc for bar']
     def batz(cmd, opts, argv)
@@ -264,7 +264,7 @@ by all commands, and any top-level filters and triggers.
 require 'optix'
 
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     # Declare the root-command
     cli_root do
@@ -305,7 +305,7 @@ if __FILE__ == $0
 end
 ```
 
-* If you're composing your cli from multiple Optix::Cli-subclasses
+* If you're composing your Cli from multiple Optix::Cli-subclasses
   then the `cli_root`-block probably feels a bit awkward because
   you're not sure in which class to put it. In that case please take
   a look at `examples/thor_style/kitchen_sink.rb` for the alternative
@@ -317,7 +317,7 @@ Declares an option.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     opt :some_name, "some description", :default => 'some_default'
     def frob(cmd, opts, argv)
@@ -387,7 +387,7 @@ Describes positional parameters that this command accepts.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
     params "<foo> [bar]"
     def frob(cmd, opts, argv)
       ...
@@ -406,7 +406,7 @@ undirected (i.e., mutual) dependencies.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     opt :we,     ""
     opt :are,    ""
@@ -425,7 +425,7 @@ Marks two (or more!) options as conflicting.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     opt :force, "Force this operation"
     opt :no_op, "Dry run, don't actually do anything"
@@ -444,7 +444,7 @@ Triggers short-circuit argument parsing for "action-options"
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     opt :version, "Print version and exit"
     trigger :version do
@@ -478,7 +478,7 @@ Filters group functionality that is common to a branch of sub-commands.
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     opt :debug, "Enable debugging"
     filter do |cmd, opts, argv|
@@ -510,7 +510,7 @@ end
 
 ```ruby
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     def frob(cmd, opts, argv)
       ...

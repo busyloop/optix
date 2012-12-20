@@ -3,7 +3,7 @@
 require 'optix'
 
 module Example
-  class Printer < Optix::CLI
+  class Printer < Optix::Cli
 
     # Declare global options; the text-label that is printed
     # for the root-command and one option that is inherited by
@@ -20,7 +20,7 @@ module Example
     text "Print a string to the screen"
     opt :count, "Print how many times?", :default => 1
     params "<string>"
-    # Your CLI-methods always 
+    # Your Cli-methods always 
     def print(cmd, opts, argv)
       if argv.length < 1
         raise Optix::HelpNeeded

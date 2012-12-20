@@ -9,7 +9,7 @@
 require 'optix'
 
 module Example
-  class HelloWorld < Optix::CLI
+  class HelloWorld < Optix::Cli
 
     # Declare a command called "world" as child of "hello"
     parent 'hello', "Try me!"

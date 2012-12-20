@@ -3,7 +3,7 @@
 require 'optix'
 
 module Example
-  class Frobnitz < Optix::CLI
+  class Frobnitz < Optix::Cli
 
     parent 'foo bar', ['desc for foo', 'desc for bar']
 

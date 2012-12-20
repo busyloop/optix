@@ -3,7 +3,7 @@
 require 'optix'
 
 module Example
-  class Bare < Optix::CLI
+  class Bare < Optix::Cli
 
     # Normally Optix would create a sub-command
     # called "main" for the method below. 
