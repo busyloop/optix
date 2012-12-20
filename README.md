@@ -2,9 +2,11 @@
 
 # Optix
 
-Optix is an unobtrusive, composable command line parser based on Trollop.
-It is intended to be a lighter weight alternative to [Thor](https://github.com/wycats/thor).
+Optix is a lightweight framework to build flexible, self-documenting
+command line interfaces with a minimum amount of code.
 
+It supports nested sub-commands (e.g. `git remote show`), auto-generates
+help-screens and provides a wide range of argument-types and validations.
 
 ## Features
 

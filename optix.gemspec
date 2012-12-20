@@ -6,8 +6,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["moe@busyloop.net"]
   gem.homepage      = "https://github.com/busyloop/optix"
   gem.has_rdoc      = false
-  gem.description   = %q{Optix is an unobtrusive, composable command line parser.}
-  gem.summary       = %q{Optix is an unobtrusive, composable command line parser.}
+  gem.description   = %q{Build flexible, self-documenting command line interfaces with a minimum amount of code.}
+  gem.summary       = %q{Build flexible, self-documenting command line interfaces with a minimum amount of code.}
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
