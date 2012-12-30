@@ -59,7 +59,7 @@ class Optix
       o[:params] = @@config[:text_param_subcommand]
     end
 
-    text = o[:header].gsub('%0', $0).gsub('%command', cmdpath.join(' ')).gsub('%params', o[:params]).gsub(/ +/, ' ')
+    text = o[:header].gsub('%0', File.basename($0)).gsub('%command', cmdpath.join(' ')).gsub('%params', o[:params]).gsub(/ +/, ' ')
 
     calls = []
     calls << [:nowrap, [text], nil]
