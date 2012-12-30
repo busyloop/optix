@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix) [![Dependency Status](https://gemnasium.com/busyloop/optix.png)](https://gemnasium.com/busyloop/optix)
-
-# Optix
+# Optix [![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix) [![Dependency Status](https://gemnasium.com/busyloop/optix.png)](https://gemnasium.com/busyloop/optix)
 
 Optix is a lightweight framework to build flexible, self-documenting
 command line interfaces with a minimum amount of code.
@@ -78,7 +76,7 @@ The above code in action:
 ```
 $ ./printer.rb --help
 
-Usage: ./printer.rb <subcommand>
+Usage: ./printer.rb <command>
  
 I am printer. I print strings to the screen.
 Please invoke one of my not so many sub-commands.

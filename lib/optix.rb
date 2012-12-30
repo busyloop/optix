@@ -22,7 +22,7 @@ class Optix
       :text_header_subcommands => 'Subcommands:',
       :text_header_topcommands => 'Commands:',
       :text_header_options => 'Options:',
-      :text_param_subcommand => '<subcommand>'
+      :text_param_subcommand => '<command>'
     }
     @@tree = {}
   end
