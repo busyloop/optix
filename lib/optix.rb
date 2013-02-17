@@ -302,6 +302,10 @@ class Optix
         @optix_parent = path
       end
 
+      def rename_to(name)
+        @optix_method_name = name
+      end
+
       def cli_root(&block)
         if block
           add_context(:cli_root, '', &block)
@@ -312,12 +316,13 @@ class Optix
 
       def method_added(meth)
         return if @optix_context.nil?
+        @optix_method_name ||= meth.to_s
         if @optix_parent == :none
           cmd_path = nil
         elsif @optix_parent
-          cmd_path = "#{@optix_parent} #{meth.to_s}"
+          cmd_path = "#{@optix_parent} #{@optix_method_name}"
         else
-          cmd_path = meth.to_s
+          cmd_path = @optix_method_name
         end
         cmd = Optix::command(cmd_path) {}
         @optix_context.each do |e|
@@ -333,6 +338,7 @@ class Optix
           self.new.send(meth, cmd, opts, argv)
         end
         @optix_parent = ''
+        @optix_method_name = nil
         @optix_context = nil
       end
     end

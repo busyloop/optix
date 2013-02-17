@@ -52,7 +52,8 @@ module KitchenSink
     desc "Multiply some numbers"
     text "Multiplication is ohsom!"
     params "<int> <int> [int] ..."
-    def multi(cmd, opts, argv)
+    rename_to 'multi'
+    def multi_and_also_demonstrate_renaming(cmd, opts, argv)
       if argv.length < 2
         puts "Error: Need at least two parameters!"
         raise Optix::HelpNeeded

@@ -415,6 +415,22 @@ end
 * Note: Optix does **not** validate or inspect positional parameters.
   Optix only uses the `params`-String to display a proper synopsis in the help-screen.
 
+### rename_to
+
+Override the command name.
+
+```ruby
+module Example
+  class Frobnitz < Optix::Cli
+    # Expose this as command 'frobnitz' instead of 'frob'.
+    rename_to "frobnitz"
+    def frob(cmd, opts, argv)
+      ...
+    end
+  end
+end
+```
+
 ### depends
 
 Marks two (or more!) options as requiring each other. Only handles
