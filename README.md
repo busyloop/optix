@@ -20,8 +20,6 @@ help-screens and provides a wide range of argument-types and validations.
 
 * Automatic validation and help-screens.
 
-* Should work on all major Ruby versions (tested on 1.9.3, 1.9.2 and 1.8.7).
-
 
 ## Installation
 
@@ -42,11 +40,11 @@ module Example
       # A label to be printed on the root help-screen
       text "I am printer. I print strings to the screen."
       text "Please invoke one of my not so many sub-commands."
-      
+
       # An option that is inherited by all commands
       opt :debug, "Enable debugging", :default => false
     end
-    
+
     # Declare a command called "print"
     desc "Print a string"
     text "Print a string to the screen"
@@ -77,29 +75,29 @@ The above code in action:
 $ ./printer.rb --help
 
 Usage: ./printer.rb <command>
- 
+
 I am printer. I print strings to the screen.
 Please invoke one of my not so many sub-commands.
- 
+
 Options:
   --debug, -d:   Enable debugging
    --help, -h:   Show this message
 
 Commands:
    print   Print a string
- 
+
 
 $ ./printer.rb print --help
 
 Usage: ./printer.rb print <string>
- 
+
 Print a string to the screen
- 
+
 Options:
   --count, -c <i>:   Print how many times? (default: 1)
       --debug, -d:   Enable debugging
        --help, -h:   Show this message
- 
+
 
 $ ./printer.rb print -c 2 foobar
 foobar
@@ -287,7 +285,7 @@ module Example
       # A label to be printed on the root help-screen
       text "I am printer. I print strings to the screen."
       text "Please invoke one of my not so many sub-commands."
-      
+
       # An option that is inherited by all commands
       opt :debug, "Enable debugging", :default => false
 
@@ -297,7 +295,7 @@ module Example
         puts "Version 1.0"
       end
     end
-    
+
     # Declare a command called "print"
     desc "Print a string"
     text "Print a string to the screen"
@@ -345,7 +343,7 @@ end
 
 Takes the following optional arguments:
 
-  * `:long` Specify the long form of the argument, i.e. the form with two dashes. 
+  * `:long` Specify the long form of the argument, i.e. the form with two dashes.
     If unspecified, will be automatically derived based on the argument name by turning the name
     option into a string, and replacing any _'s by -'s.
 
@@ -368,28 +366,28 @@ Takes the following optional arguments:
 
   * `:required` If set to **true**, the argument must be provided on the commandline.
 
-  * `:multi` If set to **true**, allows multiple occurrences of the option on the commandline. 
+  * `:multi` If set to **true**, allows multiple occurrences of the option on the commandline.
     Otherwise, only a single instance of the option is allowed.
 
     Note that there are two types of argument multiplicity: an argument
     can take multiple values, e.g. "--arg 1 2 3". An argument can also
     be allowed to occur multiple times, e.g. "--arg 1 --arg 2".
-    
+
     Arguments that take multiple values should have a `:type` parameter
     or a `:default` value of an array of the correct type (e.g. [String]).
-    
+
     The value of this argument will be an array of the parameters on the
     commandline.
-    
+
     Arguments that can occur multiple times should be marked with
     `:multi => true`. The value of this argument will also be an array.
     In contrast with regular non-multi options, if not specified on
     the commandline, the default value will be [], not nil.
-    
+
     These two attributes can be combined (e.g. **:type => :strings**,
     **:multi => true**), in which case the value of the argument will be
     an array of arrays.
-    
+
     There's one ambiguous case to be aware of: when `:multi` is **true** and a
     `:default` is set to an array (of something), it's ambiguous whether this
     is a multi-value argument as well as a multi-occurrence argument.
