@@ -1,4 +1,4 @@
-# Optix [![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix) [![Dependency Status](https://gemnasium.com/busyloop/optix.png)](https://gemnasium.com/busyloop/optix)
+# Optix [![Build Status](https://travis-ci.org/busyloop/optix.png?branch=master)](https://travis-ci.org/busyloop/optix) [![Dependency Status](https://gemnasium.com/busyloop/optix.png)](https://gemnasium.com/busyloop/optix) [![Gem Version](https://badge.fury.io/rb/optix.svg)](https://badge.fury.io/rb/optix)
 
 Optix is a lightweight framework to build flexible, self-documenting
 command line interfaces with a minimum amount of code.
